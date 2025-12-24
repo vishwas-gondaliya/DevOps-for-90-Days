@@ -1,171 +1,118 @@
-# Day 2 – Docker Fundamentals (Hands‑On)
+# Day 1 – Linux & AWS Fundamentals Reboot
 
 ## Objective
 
-Rebuild Docker fundamentals through **hands-on practice**, not tutorials.
+Re-establish core **Linux and AWS fundamentals** through direct hands-on work.
 
 The focus was to:
 
-* Remove fear around Docker commands
-* Understand images vs containers
-* Build and debug containers manually
-* Learn how Docker behaves when things silently break
+* Validate Linux command-line confidence
+* Rebuild AWS EC2 muscle memory
+* Identify real rust vs imagined weakness
+* Produce tangible proof-of-work
 
 ---
 
-## What Docker Actually Is
+## Linux Fundamentals Practiced
 
-Docker is a **process isolation and packaging system** that allows applications to run with their dependencies in a consistent environment using OS‑level isolation.
+### Tasks Performed
 
-Docker is **not** a VM and does not manage application correctness.
+* Created directories and files
+* Managed file ownership and permissions
+* Worked with processes and system resources
+* Practiced text processing and disk analysis
+* Wrote a basic bash script
 
----
-
-## Core Concepts Covered
-
-### Images vs Containers
-
-* **Image**: Immutable blueprint (built using Dockerfile)
-* **Container**: Running instance of an image
-
-A container exists **only as long as its main process runs**.
-
----
-
-## Docker Commands Practiced
+### Key Commands Used
 
 ```bash
-docker ps
-docker ps -a
-docker images
-docker run
-docker stop
-docker rm
-docker rmi
-docker logs
-docker inspect
-docker exec -it <container> sh
+mkdir
+rmdir
+chmod
+chown
+ps
+top
+grep
+awk
+sed
+tar
+zip
+df
+du
 ```
 
-Cleanup commands:
+---
+
+## Bash Script Exercise
+
+A bash script was created to:
+
+* Accept a directory name as input
+* Display disk usage of the directory
+* Identify the largest file
+* Count the total number of files
+
+This validated comfort with:
+
+* Command substitution
+* Piping and filtering
+* Script execution flow
+
+---
+
+## AWS Hands-On Exercise
+
+### EC2 Setup
+
+* Launched an Amazon Linux EC2 instance
+* Configured Security Group rules
+* Allowed SSH (22) and HTTP (80)
+* Connected via SSH using key-based authentication
+
+---
+
+## Docker Installation on EC2
+
+Docker was installed and verified on the EC2 instance.
+
+Key actions:
+
+* Installed Docker using package manager
+* Started and enabled Docker service
+* Verified Docker installation
+
+---
+
+## Running First Container (Nginx)
 
 ```bash
-docker rm $(docker ps -aq)
-docker rmi $(docker images -q)
+docker run -d -p 80:80 nginx
 ```
 
----
-
-## Running a Container (Nginx Example)
-
-```bash
-docker run -d --name web1 -p 8080:80 nginx
-```
-
-* Host port `8080` mapped to container port `80`
-* Verified access via browser using EC2 public IP
+* Container ran successfully
+* Application accessible via EC2 public IP
+* Security Group configuration validated
 
 ---
 
-## Dockerfile – Custom Image
+## Key Observations
 
-### Application (app.py)
-
-```python
-from http.server import BaseHTTPRequestHandler, HTTPServer
-
-class Handler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        self.send_response(200)
-        self.end_headers()
-        self.wfile.write(b"Hello from custom Docker image")
-
-HTTPServer(("", 8080), Handler).serve_forever()
-```
-
-### Dockerfile
-
-```Dockerfile
-FROM python:3.9-slim
-WORKDIR /app
-COPY app.py .
-EXPOSE 8080
-CMD ["python","app.py"]
-```
-
-Build and run:
-
-```bash
-docker build -t custom-python-app .
-docker run -d -p 8080:8080 custom-python-app
-```
+* Linux command knowledge was largely intact
+* Minor command recall issues were resolved quickly
+* AWS workflow was remembered without major blockers
+* Docker commands required refresh but concepts were understood
 
 ---
 
-## Debugging Silent Failures (Important)
+## Real Learnings
 
-### Issue Faced
-
-* Container running
-* No errors in logs
-* Application not reachable in browser
-
-### Root Cause
-
-* Application listening port did not match container port mapping
-
-Docker does **not validate intent**. If ports don’t match, traffic is silently dropped.
+* Googling syntax is not a weakness; not knowing what to Google is
+* Rust comes from non-usage, not lack of capability
+* Understanding system behavior matters more than memorization
 
 ---
 
-## Key Debugging Techniques Used
+## One-Line Explanation (Interview Ready)
 
-```bash
-docker ps
-docker inspect <container>
-docker logs <container>
-docker exec -it <container> sh
-ss -tuln
-```
+> Linux and AWS fundamentals were validated by provisioning infrastructure, configuring access, and running containerized workloads end-to-end.
 
-Debugging order:
-
-1. Check host → container port mapping
-2. Check listening ports inside container
-3. Verify application binding (`0.0.0.0` vs `localhost`)
-
----
-
-## EXPOSE vs Port Mapping
-
-* `EXPOSE` is **documentation only**
-* It does not publish ports
-* Actual traffic forwarding happens only via `-p` or orchestration tools
-
-**EXPOSE declares intent. `-p` enforces reality.**
-
----
-
-## Common Failure Scenarios Practiced
-
-* Wrong port mapping
-* Application binding to localhost
-* Container exiting immediately
-* Silent failures with no logs
-
-These failures were intentionally created and debugged.
-
----
-
-## Key Learnings
-
-* Docker will happily run broken configurations
-* No logs does not mean no problem
-* Containers fail silently when networking is misconfigured
-* Debugging requires checking assumptions, not guessing
-
----
-
-## One‑Line Explanation (Interview Ready)
-
-> Docker packages applications with their dependencies and runs them as isolated processes using the host OS kernel.
