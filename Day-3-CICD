@@ -166,19 +166,4 @@ They do **not** decide correctness or fix logic errors.
 
 > CI/CD is an automated system that validates, builds, and delivers software by enforcing rules defined by engineers.
 
----
 
-## Final Outcome
-
-After this exercise:
-
-* CI/CD no longer feels magical
-* Tools like Jenkins or GitHub Actions map directly to this flow
-* Pipelines can be debugged logically instead of by guessing
-
----
-
-### Final Advice
-
-If you can’t explain your pipeline without mentioning tools,
-you don’t understand CI/CD yet.
