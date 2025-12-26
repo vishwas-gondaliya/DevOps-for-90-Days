@@ -1,2 +1,2 @@
-#print ("App started successfully")
+#("App started successfully")
 x = 1
