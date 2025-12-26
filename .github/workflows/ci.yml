@@ -13,11 +13,17 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run tests
-        run: ./test.sh
+        run: | 
+          cd day-3-cicd 
+          ./test.sh
 
       - name: Build image
-        run: docker build -t day3-app .
+        run: |
+          cd day-3-cicd
+          docker build -t day3-app .
 
       - name: Deploy
-        run: docker run --rm day3-app
+        run: |
+          cd day-3-cicd
+          docker run --rm day3-app
 
